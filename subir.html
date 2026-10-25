@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Subir fotos y videos | Té Quiero</title>
+  <meta name="theme-color" content="#8CCDB7">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/galeria.css">
+  <link rel="stylesheet" href="css/subir.css">
+</head>
+<body>
+
+  <header class="site-header is-visible" id="siteHeader">
+    <div class="container site-header__inner">
+      <a href="index.html" class="site-header__logo" aria-label="Té Quiero Pastelería, ir al inicio">
+        <img src="assets/logo-white.png" alt="Té Quiero Pastelería">
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="galeria-intro">
+      <div class="container">
+        <span class="section__kicker">Panel privado</span>
+        <h1 class="galeria-intro__titulo">Subir fotos y videos</h1>
+        <p class="section__text">
+          Lo que subas acá aparece automáticamente en la galería del sitio.
+          Esta página no está en el menú. No compartas el link.
+        </p>
+      </div>
+    </section>
+
+    <section class="section subir">
+      <div class="container">
+
+        <p id="avisoConfig" class="subir__aviso" hidden>
+          Falta configurar CLOUD_NAME y UPLOAD_PRESET al principio de js/subir.js y js/galeria.js.
+        </p>
+
+        <!-- Subida -->
+        <form id="formSubida" class="subir__form">
+          <label class="subir__dropzone" id="dropzone">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+            <strong>Tocá para elegir fotos o videos</strong>
+            <span>o arrastralos hasta acá</span>
+            <input type="file" id="inputArchivos" accept="image/*,video/*" multiple>
+          </label>
+        </form>
+
+        <div class="subir__lista" id="listaSubidas"></div>
+
+        <!-- Borrado -->
+        <div class="subir__borrar">
+          <h2 class="subir__titulo">Borrar archivos</h2>
+          <p class="subir__texto">
+            Para borrar hace falta la API Key y el API Secret de Cloudinary.
+            Se guardan solo en esta pestaña y se pierden al recargar. No se publican en el código.
+          </p>
+          <form id="formCredenciales" class="subir__credenciales" autocomplete="off">
+            <label>
+              API Key
+              <input type="text" id="apiKey" required>
+            </label>
+            <label>
+              API Secret
+              <input type="password" id="apiSecret" required>
+            </label>
+            <button type="submit" class="btn btn--ghost">Activar borrado</button>
+          </form>
+          <p id="estadoCredenciales" class="subir__estado" aria-live="polite"></p>
+        </div>
+
+        <!-- Galería actual -->
+        <h2 class="subir__titulo subir__titulo--sep">Archivos subidos</h2>
+        <p id="estadoGaleria" class="subir__estado" aria-live="polite">Cargando…</p>
+        <div class="subir__lista" id="listaExistentes"></div>
+
+        <div class="galeria-volver">
+          <a class="btn btn--ghost" href="galeria.html">Ver la galería</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <img class="site-footer__logo" src="assets/logo-white.png" alt="Té Quiero Pastelería">
+      <p class="site-footer__text">&copy; <span id="year"></span> Té Quiero Pastelería.</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/subir.js"></script>
+</body>
+</html>
