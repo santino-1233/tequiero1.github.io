@@ -168,10 +168,63 @@
 
   /* ---------- Carga ---------- */
 
-  fetch("data/galeria.json", { cache: "no-cache" })
-    .then(function (respuesta) {
-      if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
-      return respuesta.json();
+  // Misma cuenta y tag que usa subir.html (ver js/subir.js)
+  var CLOUDINARY = { cloudName: "gb6kfzeo", tag: "tequiero" };
+
+  // Trae fotos y videos subidos desde subir.html. Si no hay nada o no
+  // está configurado, devuelve [] y se usa data/galeria.json.
+  function cargarDeCloudinary() {
+    if (CLOUDINARY.cloudName.indexOf("TU_") === 0) return Promise.resolve([]);
+
+    var base = "https://res.cloudinary.com/" + CLOUDINARY.cloudName;
+
+    function pedir(tipo) {
+      return fetch(base + "/" + tipo + "/list/" + CLOUDINARY.tag + ".json", { cache: "no-cache" })
+        .then(function (r) { return r.ok ? r.json() : { resources: [] }; })
+        .then(function (data) {
+          return (data.resources || []).map(function (r) {
+            return { tipo: tipo === "video" ? "video" : "imagen", recurso: r };
+          });
+        });
+    }
+
+    return Promise.all([pedir("image"), pedir("video")])
+      .then(function (listas) {
+        var todos = listas[0].concat(listas[1]);
+        todos.sort(function (a, b) {
+          return new Date(b.recurso.created_at) - new Date(a.recurso.created_at);
+        });
+        return todos.map(function (x) {
+          var r = x.recurso;
+          if (x.tipo === "video") {
+            return {
+              tipo: "video",
+              src: base + "/video/upload/q_auto/" + r.public_id + "." + r.format,
+              poster: base + "/video/upload/so_0,w_800,c_limit,f_jpg/" + r.public_id + ".jpg",
+              titulo: ""
+            };
+          }
+          return {
+            tipo: "imagen",
+            src: base + "/image/upload/f_auto,q_auto,c_limit,w_1200/" + r.public_id + "." + r.format,
+            titulo: ""
+          };
+        });
+      })
+      .catch(function () { return []; });
+  }
+
+  function cargarDeArchivo() {
+    return fetch("data/galeria.json", { cache: "no-cache" })
+      .then(function (respuesta) {
+        if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
+        return respuesta.json();
+      });
+  }
+
+  cargarDeCloudinary()
+    .then(function (lista) {
+      return lista.length ? lista : cargarDeArchivo();
     })
     .then(function (lista) {
       grid.innerHTML = "";
